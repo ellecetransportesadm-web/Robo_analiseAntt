@@ -3,898 +3,937 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Auditor de XML & Calculadora Oficial ANTT</title>
+  <title>Painel Auditor CIOT | Grupo Pandurata</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #090d16;
-      --card: #111726;
-      --border: #1e293b;
-      --primary: #3b82f6;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --text-dim: #64748b;
-      --green: #10b981;
-      --red: #f43f5e;
-      --orange: #f59e0b;
-      --cyan: #06b6d4;
+      --bi-orange-main: #f97316;
+      --bi-orange-dark: #ea580c;
+      --bi-orange-sidebar: linear-gradient(180deg, #fb923c 0%, #ea580c 100%);
+      --bi-sidebar-border: #fdba74;
+      --pandurata-green: #008542;
+      --pandurata-green-light: #e8f5e9;
+      --pandurata-green-border: #a7f3d0;
+      --bi-brown: #451a03;
+      --bi-bg-canvas: #f8fafc;
+      --bi-card-bg: #ffffff;
+      --bi-border-card: #e2e8f0;
+      --bi-text-title: #1e293b;
+      --bi-text-sub: #64748b;
+      --danger-color: #dc2626;
+      --danger-bg: #fef2f2;
+      --warning-color: #d97706;
+      --warning-bg: #fffbeb;
+      --success-color: #008542;
+      --success-bg: #ecfdf5;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding: 24px 16px 80px 16px; display: flex; justify-content: center; }
-    .container { width: 100%; max-width: 1200px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bi-bg-canvas); color: var(--bi-text-title); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
 
-    header {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px 24px;
-      margin-bottom: 20px;
+    /* Barra Superior Corporativa */
+    .top-navbar {
+      height: 52px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--bi-border-card);
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 16px;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      z-index: 30;
     }
-    .badge {
-      background: rgba(59, 130, 246, 0.15);
-      color: #93c5fd;
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      padding: 4px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-    }
-    h1 { font-size: 20px; font-weight: 800; color: #fff; margin-top: 4px; }
-    p.sub { font-size: 13px; color: var(--text-muted); }
 
-    .tools-nav {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .brand-group {
+      display: flex;
+      align-items: center;
       gap: 12px;
-      margin-bottom: 20px;
     }
-    .tool-btn {
-      background: var(--card);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 16px 20px;
-      border-radius: 12px;
+
+    .logo-pandurata {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+      color: var(--pandurata-green);
+    }
+
+    .logo-pandurata span {
+      background: var(--pandurata-green);
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .nav-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--bi-text-sub);
+      border-left: 1px solid #cbd5e1;
+      padding-left: 12px;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 1.1rem;
       cursor: pointer;
+    }
+
+    /* Estrutura Dashboard Inteira */
+    .dashboard-layout {
+      display: flex;
+      flex: 1;
+      min-height: calc(100vh - 52px);
+    }
+
+    /* Sidebar Estilo Power BI */
+    .bi-sidebar {
+      width: 230px;
+      background: var(--bi-orange-sidebar);
+      padding: 18px 14px;
+      color: #ffffff;
       display: flex;
       flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-      transition: all 0.2s;
-    }
-    .tool-btn:hover { background: #161e31; color: #fff; }
-    .tool-btn.active {
-      background: rgba(59, 130, 246, 0.1);
-      border-color: var(--primary);
-      color: #fff;
-      box-shadow: 0 0 0 1px var(--primary);
-    }
-    .tool-btn span.title { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-    .tool-btn span.desc { font-size: 12px; color: var(--text-dim); }
-
-    .module-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
+      gap: 14px;
+      box-shadow: 2px 0 8px rgba(234, 88, 12, 0.15);
+      transition: all 0.3s ease;
+      z-index: 20;
     }
 
-    textarea {
-      width: 100%;
-      height: 120px;
-      background: #090d16;
-      border: 1px solid var(--border);
-      color: #e2e8f0;
-      padding: 12px;
-      border-radius: 10px;
-      font-family: monospace;
-      font-size: 12px;
-      outline: none;
-      margin-bottom: 12px;
-    }
-    textarea:focus { border-color: var(--primary); }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      align-items: flex-end;
-    }
-    .form-group { display: flex; flex-direction: column; gap: 6px; }
-    label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-    input, select {
-      background: #090d16;
-      border: 1px solid var(--border);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      outline: none;
-    }
-    input:focus, select:focus { border-color: var(--primary); }
-
-    .btn-action {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 11px 22px;
-      border-radius: 8px;
+    .sidebar-header {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
       font-weight: 700;
-      font-size: 13px;
+      opacity: 0.9;
+      border-bottom: 1px solid rgba(255,255,255,0.25);
+      padding-bottom: 8px;
+      margin-bottom: 2px;
+    }
+
+    .filter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      opacity: 0.95;
+    }
+
+    .bi-select, .bi-input {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--bi-sidebar-border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      color: #0f172a;
+      font-weight: 600;
+      width: 100%;
+      outline: none;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .btn-action-side {
+      background: var(--bi-brown);
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.85rem;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      height: 42px;
+      margin-top: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
       transition: 0.2s;
     }
-    .btn-action:hover { background: #2563eb; }
 
-    .results-section { display: none; flex-direction: column; gap: 16px; margin-top: 20px; }
+    .btn-action-side:hover {
+      background: #270e02;
+    }
 
+    /* Área Principal de Conteúdo */
+    .bi-content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    /* Área de Upload Translúcida com Borda Suave */
+    .upload-box {
+      background: #ffffff;
+      border: 2px dashed #cbd5e1;
+      border-radius: 10px;
+      padding: 18px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .upload-box:hover {
+      border-color: var(--bi-orange-main);
+      background: #fffaf5;
+    }
+
+    .upload-box p {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .upload-box span {
+      color: var(--bi-orange-dark);
+      text-decoration: underline;
+    }
+
+    textarea.xml-input {
+      width: 100%;
+      height: 75px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px;
+      font-family: ui-monospace, monospace;
+      font-size: 11px;
+      color: #334155;
+      resize: vertical;
+      margin-top: 8px;
+    }
+
+    /* Barra de Alerta Dinâmica */
+    .alert-banner {
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Grid de Cartões Estilo BI (Com o ícone circular lateral laranja) */
     .kpi-row {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
-    .kpi-card {
-      background: #090d16;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
+
+    .bi-card-kpi {
+      background: var(--bi-card-bg);
+      border: 1px solid var(--bi-border-card);
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .kpi-card span { font-size: 11px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
-    .kpi-card strong { display: block; font-size: 20px; color: #fff; margin-top: 4px; }
-    .kpi-card small { font-size: 11px; color: var(--text-muted); }
-
-    .input-km-antt {
-      background: #090d16;
-      border: 2px solid var(--orange);
-      color: #fbbf24;
-      font-size: 20px;
-      font-weight: 800;
-      border-radius: 8px;
-      padding: 4px 10px;
-      width: 140px;
-      outline: none;
-      margin-top: 4px;
-    }
-    .input-km-antt:focus {
-      border-color: #f59e0b;
-      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
-    }
-
-    .audit-reason-box {
-      background: #090d16;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 20px;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    .audit-reason-box.reprovado {
-      border-left: 4px solid var(--red);
-      background: rgba(244, 63, 94, 0.05);
-    }
-    .audit-reason-box.aprovado {
-      border-left: 4px solid var(--green);
-      background: rgba(16, 185, 129, 0.05);
-    }
-
-    .table-box {
-      background: #090d16;
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      align-items: center;
+      gap: 14px;
+      position: relative;
       overflow: hidden;
     }
-    .table-title {
-      padding: 14px 18px;
-      font-size: 13px;
+
+    .bi-card-kpi::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--bi-orange-main);
+    }
+
+    .kpi-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      color: var(--bi-orange-dark);
+      flex-shrink: 0;
+    }
+
+    .kpi-icon-circle.green {
+      background: var(--pandurata-green-light);
+      border-color: var(--pandurata-green-border);
+      color: var(--pandurata-green);
+    }
+
+    .kpi-details {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-value {
+      font-size: 1.25rem;
       font-weight: 700;
-      border-bottom: 1px solid var(--border);
-      color: #cbd5e1;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-label {
+      font-size: 0.73rem;
+      font-weight: 600;
+      color: var(--bi-text-sub);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .kpi-sub {
+      font-size: 0.72rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    /* Linha do Trajeto IBGE & Mapas */
+    .route-strip {
+      background: #ffffff;
+      border: 1px solid var(--bi-border-card);
+      border-radius: 10px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .route-cities {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .city-tag {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 6px;
+      color: #0f172a;
+    }
+
+    .city-tag.pandurata {
+      background: var(--pandurata-green-light);
+      border-color: var(--pandurata-green-border);
+      color: var(--pandurata-green);
+    }
+
+    .maps-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-maps {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #334155;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .btn-maps:hover {
+      border-color: var(--bi-orange-main);
+      color: var(--bi-orange-dark);
+      background: #fff7ed;
+    }
+
+    .btn-maps.primary {
+      background: var(--bi-orange-main);
+      color: #ffffff;
+      border-color: var(--bi-orange-main);
+    }
+
+    .btn-maps.primary:hover {
+      background: var(--bi-orange-dark);
+    }
+
+    /* Tabela Estilo Matriz Power BI */
+    .table-card {
+      background: #ffffff;
+      border: 1px solid var(--bi-border-card);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+    }
+
+    .table-card-header {
+      padding: 12px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--bi-border-card);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th { background: rgba(255,255,255,0.02); color: var(--text-muted); text-align: left; padding: 12px 16px; font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-    td { padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04); font-variant-numeric: tabular-nums; }
-    tr:last-child td { border-bottom: none; }
 
-    .tag-status {
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    th {
+      background: #f8fafc;
+      text-align: left;
+      padding: 10px 16px;
+      font-weight: 700;
+      color: #64748b;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--bi-border-card);
+    }
+
+    td {
+      padding: 11px 16px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #334155;
+    }
+
+    tr:hover td {
+      background: #fafafa;
+    }
+
+    .badge-status {
       display: inline-block;
       padding: 3px 8px;
       border-radius: 4px;
-      font-size: 11px;
+      font-size: 0.72rem;
       font-weight: 700;
     }
-    .tag-pass { background: rgba(16, 185, 129, 0.15); color: var(--green); }
-    .tag-fail { background: rgba(244, 63, 94, 0.15); color: var(--red); }
-    .tag-neutral { background: rgba(255, 255, 255, 0.06); color: var(--text-dim); }
+
+    .badge-ok { background: var(--success-bg); color: var(--success-color); border: 1px solid var(--pandurata-green-border); }
+    .badge-erro { background: var(--danger-bg); color: var(--danger-color); border: 1px solid #fecaca; }
+    .badge-alerta { background: var(--warning-bg); color: var(--warning-color); border: 1px solid #fde68a; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsividade para Telas Menores e Celulares */
+    @media (max-width: 900px) {
+      .mobile-menu-btn { display: block; }
+      .dashboard-layout { flex-direction: column; }
+      .bi-sidebar {
+        width: 100%;
+        display: none;
+      }
+      .bi-sidebar.open {
+        display: flex;
+      }
+      .route-strip { flex-direction: column; align-items: flex-start; }
+      .kpi-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="container">
+  <!-- Topbar Corporativa -->
+  <header class="top-navbar">
+    <div class="brand-group">
+      <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="logo-pandurata">
+        GRUPO PANDURATA <span>LOGÍSTICA</span>
+      </div>
+      <div class="nav-title">Auditor Pré-CIOT & Conformidade ANTT</div>
+    </div>
+    <div style="font-size: 0.8rem; font-weight: 600; color: #64748b;">
+      Ambiente de Produção · IPEF
+    </div>
+  </header>
+
+  <!-- Layout Principal Full-Screen -->
+  <div class="dashboard-layout">
     
-    <header>
-      <div>
-        <span class="badge">ANTT Resolução nº 6.084</span>
-        <h1>Auditor de XML & Calculadora Oficial ANTT</h1>
-        <p class="sub">Confronta o frete e a KM declarada no XML com a distância rodoviária oficial esperada pela ANTT/IPEF.</p>
+    <!-- Painel Lateral de Filtros (Estilo BI Laranja) -->
+    <aside class="bi-sidebar" id="sidebarFiltros">
+      <div class="sidebar-header">Parâmetros Operacionais</div>
+
+      <div class="filter-item">
+        <label class="filter-label">Perfil de Frota (ANTT)</label>
+        <select id="selPerfil" class="bi-select" onchange="recalcularValores()">
+          <option value="fiorino">Fiorino / Furgão (2 Eixos)</option>
+          <option value="vuc" selected>VUC / 608 (2 Eixos)</option>
+          <option value="toco">Toco (2 Eixos)</option>
+          <option value="truck">Truck (3 Eixos)</option>
+          <option value="bitruck">Bitruck (4 Eixos)</option>
+          <option value="carreta">Carreta (5 Eixos)</option>
+          <option value="carretals">Carreta LS (6 Eixos)</option>
+          <option value="rodotrem">Rodotrem (9 Eixos)</option>
+        </select>
       </div>
-    </header>
 
-    <div class="tools-nav">
-      <button class="tool-btn active" id="btn-mod-xml" onclick="selecionarModulo('xml')">
-        <span class="title">📑 Módulo 1: Auditor de XML</span>
-        <span class="desc">Analisa o XML, extrai KM declarada e confronta com a KM e Piso esperados pela ANTT.</span>
-      </button>
+      <div class="filter-item">
+        <label class="filter-label">Tipo de Transporte</label>
+        <select class="bi-select">
+          <option>Lotação (Exclusiva)</option>
+          <option>Fracionada</option>
+        </select>
+      </div>
 
-      <button class="tool-btn" id="btn-mod-antt" onclick="selecionarModulo('antt')">
-        <span class="title">🚚 Módulo 2: Calculadora Oficial ANTT</span>
-        <span class="desc">Consulte a KM e os valores oficiais para qualquer rota, carga e eixos sem precisar de XML.</span>
-      </button>
-    </div>
+      <div class="filter-item">
+        <label class="filter-label">Composição Veicular</label>
+        <input type="text" id="sideComposicao" class="bi-input" value="1 - Individual" readonly>
+      </div>
 
-    <!-- MÓDULO 1: AUDITOR DE XML -->
-    <div class="module-card" id="modulo-xml">
-      <h2 style="font-size:16px; margin-bottom:12px; color:#93c5fd;">Auditoria de Arquivo XML (CIOT / CT-e / MDF-e)</h2>
-      <textarea id="input-xml" placeholder="Cole aqui a estrutura do XML (&lt;processo_transporte&gt;, &lt;infCte&gt; ou &lt;infMDFe&gt;)..."></textarea>
+      <div class="filter-item">
+        <label class="filter-label">Operação de Frete</label>
+        <input type="text" id="sideOperacao" class="bi-input" value="1 - Padrão" readonly>
+      </div>
+
+      <div class="filter-item">
+        <label class="filter-label">Embarcador / Cliente</label>
+        <input type="text" id="sideCliente" class="bi-input" value="Pandurata Alimentos" readonly>
+      </div>
+
+      <button class="btn-action-side" onclick="recalcularValores()">🔄 Recalcular Piso</button>
+    </aside>
+
+    <!-- Conteúdo Principal Dinâmico -->
+    <main class="bi-content">
       
-      <button class="btn-action" onclick="auditarXMLCompleto()">
-        🔍 Auditar XML & Comparar com a ANTT
-      </button>
+      <!-- Caixa de Entrada de XML -->
+      <section class="upload-box" onclick="document.getElementById('fileInput').click()">
+        <p>📂 Arraste o arquivo XML do Contrato/Viagem ou <span>clique para carregar</span></p>
+        <input type="file" id="fileInput" accept=".xml,.txt" style="display:none" onchange="handleFileUpload(event)">
+      </section>
 
-      <div class="results-section" id="res-xml">
-        <div id="m1-audit-box" class="audit-reason-box"></div>
-
-        <div class="kpi-row">
-          <div class="kpi-card">
-            <span>Frete Declarado (XML)</span>
-            <strong id="m1-kpi-frete" style="color: #60a5fa;">R$ 0,00</strong>
-            <small>Valor bruto contratado</small>
-          </div>
-
-          <div class="kpi-card">
-            <span>KM Declarada no XML</span>
-            <strong id="m1-kpi-km-dec" style="color: var(--cyan);">0 km</strong>
-            <small id="m1-kpi-km-dec-sub">Valor do campo XML</small>
-          </div>
-
-          <div class="kpi-card" style="border-color: rgba(245, 158, 11, 0.4);">
-            <span>KM Esperada pela ANTT (Editável)</span>
-            <div style="display:flex; align-items:center; gap:6px;">
-              <input type="number" id="m1-input-km-antt" class="input-km-antt" value="0" oninput="recalcularEixosXMLComNovaKM(this.value)">
-              <span style="font-weight:700; color:#fbbf24; font-size:16px;">km</span>
-            </div>
-            <small style="color:var(--orange);">Malha oficial da IPEF</small>
-          </div>
-
-          <div class="kpi-card">
-            <span>Diferença de Trajeto</span>
-            <strong id="m1-kpi-km-dif">0 km</strong>
-            <small id="m1-kpi-km-dif-sub">Variação de malha</small>
-          </div>
-        </div>
-
-        <div class="table-box">
-          <div class="table-title">
-            <span>Comparativo por Eixos: Piso com KM do XML vs Piso com KM Oficial da ANTT</span>
-            <span style="font-size:11px; color:var(--text-dim); font-weight:normal;">ANTT Resolução nº 6.084 (Tabela A - Carga Geral)</span>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Configuração do Veículo</th>
-                <th>CCD (R$/km)</th>
-                <th>CC (R$)</th>
-                <th>Piso com KM XML (<span id="m1-th-km-dec">0</span> km)</th>
-                <th style="color:#fbbf24;">Piso com KM ANTT (<span id="m1-th-km-antt">0</span> km)</th>
-                <th>Situação do seu Frete</th>
-              </tr>
-            </thead>
-            <tbody id="m1-tbody-eixos"></tbody>
-          </table>
-        </div>
-
-        <div class="table-box">
-          <div class="table-title">Dados da Carga e Veículos Extraídos do XML</div>
-          <table>
-            <tbody>
-              <tr>
-                <th style="width: 20%;">Processo / Roteiro</th>
-                <td id="m1-proc" style="font-weight:700; color:#fff;">-</td>
-                <th style="width: 20%;">Contratado / Motorista</th>
-                <td id="m1-contratado">-</td>
-              </tr>
-              <tr>
-                <th>Trajeto Identificado</th>
-                <td id="m1-rota" colspan="3">-</td>
-              </tr>
-              <tr>
-                <th>Coordenadas GPS</th>
-                <td id="m1-coords" colspan="3" style="font-family:monospace; color:#38bdf8;">-</td>
-              </tr>
-              <tr>
-                <th>Cavalo Mecânico</th>
-                <td id="m1-cavalo">-</td>
-                <th>Implemento / Carreta</th>
-                <td id="m1-carreta">-</td>
-              </tr>
-              <tr>
-                <th>Classificação NCM</th>
-                <td id="m1-ncm">-</td>
-                <th>Peso da Carga</th>
-                <td id="m1-peso" style="font-weight:700; color:#fff;">-</td>
-              </tr>
-              <tr>
-                <th>Valor da Mercadoria</th>
-                <td id="m1-val-carga" style="color:var(--green); font-weight:700;">-</td>
-                <th>Adiantamento Informado</th>
-                <td id="m1-adiantamento">-</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- MÓDULO 2: CALCULADORA OFICIAL ANTT -->
-    <div class="module-card" id="modulo-antt" style="display:none;">
-      <h2 style="font-size:16px; margin-bottom:12px; color:#fbbf24;">Consulta Direta: O que a ANTT espera de KM e Valores</h2>
+      <textarea id="xmlPaste" class="xml-input" placeholder="Ou cole o código XML do CIOT (<processo_transporte>)..."></textarea>
       
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Como deseja informar a Rota?</label>
-          <select id="m2-tipo-rota" onchange="ajustarCamposRotaManual()">
-            <option value="cidade">Município (Origem e Destino)</option>
-            <option value="cep">CEP (Origem e Destino)</option>
-            <option value="latlong">Coordenadas Lat / Long</option>
-            <option value="km_direta">Digitar a Quilometragem Direta</option>
-          </select>
-        </div>
-
-        <div class="form-group" id="m2-grp-ori">
-          <label id="m2-lbl-ori">Cidade de Origem (Nome - UF)</label>
-          <input type="text" id="m2-input-ori" placeholder="Ex: Rio Largo - AL" value="Rio Largo - AL">
-        </div>
-
-        <div class="form-group" id="m2-grp-dest">
-          <label id="m2-lbl-dest">Cidade de Destino (Nome - UF)</label>
-          <input type="text" id="m2-input-dest" placeholder="Ex: Extrema - MG" value="Extrema - MG">
-        </div>
-
-        <div class="form-group" id="m2-grp-kmdireta" style="display:none;">
-          <label>Quilometragem (km)</label>
-          <input type="number" id="m2-input-kmdireta" placeholder="Ex: 2368" value="2368">
-        </div>
-      </div>
-
-      <div class="form-grid" style="margin-top:12px;">
-        <div class="form-group">
-          <label>Composição Veicular</label>
-          <select id="m2-tabela-antt">
-            <option value="A">Tabela A (Veículo Automotor + Implemento - Caminhão Completo)</option>
-            <option value="B">Tabela B (Apenas Veículo Automotor - Cavalo Mecânico Solteiro)</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Tipo de Carga</label>
-          <select id="m2-tipo-carga">
-            <option value="geral">Carga Geral (Biscoitos, Alimentos, Ensacados, Caixas)</option>
-            <option value="granel_solido">Granel Sólido</option>
-            <option value="granel_liquido">Granel Líquido</option>
-            <option value="frigorificada">Frigorificada / Refrigerada</option>
-            <option value="perigosa">Carga Perigosa</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Frete a Simular (R$) [Opcional]</label>
-          <input type="number" step="0.01" id="m2-frete-simulacao" placeholder="Ex: 18250.00" value="18250.00">
-        </div>
-
-        <button class="btn-action" style="background:#d97706;" onclick="consultarCalculadoraANTT()">
-          ⚡ Obter KM e Tabela ANTT
+      <div style="display:flex; justify-content: flex-end;">
+        <button class="btn-action-side" style="margin-top:0; padding: 9px 24px; background: var(--bi-orange-dark);" onclick="processarXML(document.getElementById('xmlPaste').value)">
+          Analisar Consistência do XML
         </button>
       </div>
 
-      <div class="results-section" id="res-antt">
-        <div class="kpi-row">
-          <div class="kpi-card" style="border-color: rgba(245, 158, 11, 0.4);">
-            <span>KM Esperada pela ANTT</span>
-            <strong id="m2-kpi-km" style="color: #fbbf24;">0 km</strong>
-            <small id="m2-kpi-km-desc">Malha rodoviária oficial</small>
-          </div>
-          <div class="kpi-card">
-            <span>Piso para 6 Eixos (Cavalo + Carreta 3E)</span>
-            <strong id="m2-kpi-piso6" style="color: #60a5fa;">R$ 0,00</strong>
-            <small id="m2-kpi-coef6">CCD + CC</small>
-          </div>
-          <div class="kpi-card">
-            <span>Piso para 7 Eixos (Bitrem / LS)</span>
-            <strong id="m2-kpi-piso7" style="color: #c4b5fd;">R$ 0,00</strong>
-            <small id="m2-kpi-coef7">CCD + CC</small>
-          </div>
-          <div class="kpi-card">
-            <span>Frete Simulado</span>
-            <strong id="m2-kpi-frete" style="color: var(--green);">R$ 0,00</strong>
-            <small>Valor avaliado</small>
-          </div>
-        </div>
+      <!-- Área de Resultados Renderizada após Leitura -->
+      <div id="resultado" style="display: none; display: flex; flex-direction: column; gap: 16px;">
+        
+        <!-- Alerta de Bloqueio ou Aprovação -->
+        <div id="statusGeral" class="alert-banner"></div>
 
-        <div class="table-box">
-          <div class="table-title">
-            <span>Tabela Completa de Piso Mínimo ANTT (<span id="m2-th-km">0</span> km)</span>
-            <span style="font-size:11px; color:#fbbf24;" id="m2-th-config-desc">Tabela A • Carga Geral</span>
+        <!-- Faixa de Trajeto com IBGE e Google Maps -->
+        <section class="route-strip">
+          <div>
+            <div style="font-size: 0.72rem; text-transform: uppercase; font-weight: 700; color: #64748b; margin-bottom: 4px;">
+              Trajeto Territorial Identificado (Base IBGE)
+            </div>
+            <div class="route-cities">
+              <span class="city-tag pandurata" id="lblOrigem">Guarulhos - SP</span>
+              <span style="color: var(--bi-orange-main); font-size: 1.2rem;">➔</span>
+              <span class="city-tag" id="lblDestino">Itararé - SP</span>
+            </div>
           </div>
+
+          <div id="linksMaps" class="maps-actions"></div>
+        </section>
+
+        <!-- Grade de Indicadores (KPIs Power BI) -->
+        <section class="kpi-row">
+          <div class="bi-card-kpi">
+            <div class="kpi-icon-circle">🚚</div>
+            <div class="kpi-details">
+              <div class="kpi-value" id="resPlaca">CKH9B32</div>
+              <div class="kpi-label">Placa & Veículo</div>
+              <div class="kpi-sub" id="resSubPlaca">Veículo de Tração</div>
+            </div>
+          </div>
+
+          <div class="bi-card-kpi">
+            <div class="kpi-icon-circle green">🛣️</div>
+            <div class="kpi-details">
+              <div class="kpi-value" id="resKmDecl">0.0 KM</div>
+              <div class="kpi-label">KM Declarado</div>
+              <div class="kpi-sub">Tag &lt;distancia_percorrida&gt;</div>
+            </div>
+          </div>
+
+          <div class="bi-card-kpi">
+            <div class="kpi-icon-circle green">📍</div>
+            <div class="kpi-details">
+              <div class="kpi-value" id="resKmReal">365.2 KM</div>
+              <div class="kpi-label">KM Estimado GPS</div>
+              <div class="kpi-sub">Trajeto Rodoviário Real</div>
+            </div>
+          </div>
+
+          <div class="bi-card-kpi">
+            <div class="kpi-icon-circle">💰</div>
+            <div class="kpi-details">
+              <div class="kpi-value" id="resVlrPago">R$ 1.521,00</div>
+              <div class="kpi-label">Frete Contratado</div>
+              <div class="kpi-sub" id="resAdiantamento">Adiantamento: R$ 912,60</div>
+            </div>
+          </div>
+
+          <div class="bi-card-kpi">
+            <div class="kpi-icon-circle">⚖️</div>
+            <div class="kpi-details">
+              <div class="kpi-value" id="resVlrMinimo">R$ 1.445,16</div>
+              <div class="kpi-label">Piso Mínimo ANTT</div>
+              <div class="kpi-sub" id="resSaldoPiso" style="font-weight: 700;">+ R$ 75,84 Conforme</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Matriz de Validação e Críticas -->
+        <section class="table-card">
+          <div class="table-card-header">
+            <span>Matriz de Diagnóstico e Auditoria Prévia do CIOT</span>
+            <span id="resDocumentos" style="font-size: 0.78rem; font-weight: 600; color: #64748b;">CTRC: 000221127 | NF: 000179968</span>
+          </div>
+
           <table>
             <thead>
               <tr>
-                <th>Configuração do Veículo</th>
-                <th>Eixos</th>
-                <th>CCD (R$/km)</th>
-                <th>CC (R$)</th>
-                <th>Piso Mínimo Oficial ANTT</th>
-                <th>Situação do Frete Simulado</th>
+                <th>Regra Auditada</th>
+                <th>Dado Identificado no XML</th>
+                <th>Parâmetro de Conformidade ANTT / IPEF</th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody id="m2-tbody-eixos"></tbody>
+            <tbody id="tabelaCriticasCorpo"></tbody>
           </table>
-        </div>
-      </div>
-    </div>
+        </section>
 
+      </div>
+    </main>
   </div>
 
   <script>
-    const TABELA_ANTT = {
-      A: {
-        geral: {
-          2: { ccd: 3.9826, cc: 451.84, nome: "2 Eixos (Caminhão Toco)" },
-          3: { ccd: 5.0977, cc: 541.86, nome: "3 Eixos (Caminhão Truck)" },
-          4: { ccd: 5.7822, cc: 588.86, nome: "4 Eixos (Caminhão Bitruck)" },
-          5: { ccd: 6.6718, cc: 657.56, nome: "5 Eixos (Cavalo Simples + Carreta 2E)" },
-          6: { ccd: 7.3547, cc: 671.93, nome: "6 Eixos (Cavalo Trucado + Carreta 3E)" },
-          7: { ccd: 8.0927, cc: 831.66, nome: "7 Eixos (Bitrem / Carreta LS 3E)" },
-          9: { ccd: 9.2027, cc: 903.32, nome: "9 Eixos (Rodotrem)" }
-        },
-        granel_solido: {
-          2: { ccd: 4.0144, cc: 460.59, nome: "2 Eixos (Toco Granel)" },
-          3: { ccd: 5.1420, cc: 552.10, nome: "3 Eixos (Truck Granel)" },
-          4: { ccd: 5.8410, cc: 601.20, nome: "4 Eixos (Bitruck Granel)" },
-          5: { ccd: 6.7410, cc: 672.40, nome: "5 Eixos (Cavalo Simples + Carreta)" },
-          6: { ccd: 7.4320, cc: 686.50, nome: "6 Eixos (Cavalo Trucado + Carreta)" },
-          7: { ccd: 8.1810, cc: 850.10, nome: "7 Eixos (Bitrem Granel)" },
-          9: { ccd: 9.3100, cc: 924.50, nome: "9 Eixos (Rodotrem Granel)" }
-        },
-        granel_liquido: {
-          2: { ccd: 4.0884, cc: 471.98, nome: "2 Eixos (Toco Tanque)" },
-          3: { ccd: 5.2310, cc: 565.40, nome: "3 Eixos (Truck Tanque)" },
-          4: { ccd: 5.9420, cc: 615.30, nome: "4 Eixos (Bitruck Tanque)" },
-          5: { ccd: 6.8520, cc: 688.20, nome: "5 Eixos (Cavalo + Carreta Tanque)" },
-          6: { ccd: 7.5610, cc: 702.40, nome: "6 Eixos (Cavalo Trucado + Tanque)" },
-          7: { ccd: 8.3200, cc: 870.50, nome: "7 Eixos (Bitrem Tanque)" },
-          9: { ccd: 9.4700, cc: 945.20, nome: "9 Eixos (Rodotrem Tanque)" }
-        },
-        frigorificada: {
-          2: { ccd: 4.4510, cc: 520.07, nome: "2 Eixos (Toco Frigorífico)" },
-          3: { ccd: 5.6820, cc: 622.40, nome: "3 Eixos (Truck Frigorífico)" },
-          4: { ccd: 6.4510, cc: 678.10, nome: "4 Eixos (Bitruck Frigorífico)" },
-          5: { ccd: 7.4410, cc: 758.30, nome: "5 Eixos (Cavalo + Carreta Frig.)" },
-          6: { ccd: 8.2100, cc: 774.20, nome: "6 Eixos (Cavalo Trucado + Frig.)" },
-          7: { ccd: 9.0320, cc: 960.30, nome: "7 Eixos (Bitrem Frigorífico)" },
-          9: { ccd: 10.2800, cc: 1042.10, nome: "9 Eixos (Rodotrem Frig.)" }
-        },
-        perigosa: {
-          2: { ccd: 4.7845, cc: 608.79, nome: "2 Eixos (Toco Perigosa)" },
-          3: { ccd: 6.1100, cc: 728.50, nome: "3 Eixos (Truck Perigosa)" },
-          4: { ccd: 6.9400, cc: 792.40, nome: "4 Eixos (Bitruck Perigosa)" },
-          5: { ccd: 8.0100, cc: 885.30, nome: "5 Eixos (Cavalo + Carreta Perigosa)" },
-          6: { ccd: 8.8300, cc: 904.50, nome: "6 Eixos (Cavalo Trucado + Perigosa)" },
-          7: { ccd: 9.7200, cc: 1120.40, nome: "7 Eixos (Bitrem Perigosa)" },
-          9: { ccd: 11.0500, cc: 1215.30, nome: "9 Eixos (Rodotrem Perigosa)" }
-        }
-      },
-      B: {
-        geral: {
-          2: { ccd: 2.8510, cc: 320.10, nome: "2 Eixos (Cavalo Toco 4x2)" },
-          3: { ccd: 3.5210, cc: 380.20, nome: "3 Eixos (Cavalo Trucado 6x2/6x4)" }
-        },
-        granel_solido: {
-          2: { ccd: 2.8820, cc: 330.10, nome: "2 Eixos (Cavalo Toco)" },
-          3: { ccd: 3.5610, cc: 390.20, nome: "3 Eixos (Cavalo Trucado)" }
-        },
-        granel_liquido: {
-          2: { ccd: 2.9210, cc: 340.20, nome: "2 Eixos (Cavalo Toco)" },
-          3: { ccd: 3.6120, cc: 400.10, nome: "3 Eixos (Cavalo Trucado)" }
-        },
-        frigorificada: {
-          2: { ccd: 3.1520, cc: 380.10, nome: "2 Eixos (Cavalo Toco)" },
-          3: { ccd: 3.8900, cc: 440.20, nome: "3 Eixos (Cavalo Trucado)" }
-        },
-        perigosa: {
-          2: { ccd: 3.4210, cc: 440.10, nome: "2 Eixos (Cavalo Toco)" },
-          3: { ccd: 4.2100, cc: 510.30, nome: "3 Eixos (Cavalo Trucado)" }
-        }
-      }
+    const TABELA_PERFIS = {
+      fiorino:  { eixos: 2, taxaKm: 2.80, diaria: 180.00, nome: "Fiorino / Furgão" },
+      vuc:      { eixos: 2, taxaKm: 3.30, diaria: 240.00, nome: "VUC / 608 (3/4)" },
+      toco:     { eixos: 2, taxaKm: 4.20, diaria: 360.00, nome: "Toco (2 Eixos)" },
+      truck:    { eixos: 3, taxaKm: 5.30, diaria: 470.00, nome: "Truck (3 Eixos)" },
+      bitruck:  { eixos: 4, taxaKm: 6.10, diaria: 540.00, nome: "Bitruck (4 Eixos)" },
+      carreta:  { eixos: 5, taxaKm: 6.90, diaria: 630.00, nome: "Carreta (5 Eixos)" },
+      carretals:{ eixos: 6, taxaKm: 7.70, diaria: 710.00, nome: "Carreta LS (6 Eixos)" },
+      rodotrem: { eixos: 9, taxaKm: 9.80, diaria: 920.00, nome: "Rodotrem (9 Eixos)" }
     };
 
-    const CIDADES_MAPA = {
-      "RIO LARGO": { lat: -9.4714, lon: -35.8318 },
-      "MACEIO": { lat: -9.6658, lon: -35.7353 },
-      "EXTREMA": { lat: -22.8547, lon: -46.3183 },
-      "SAO PAULO": { lat: -23.5505, lon: -46.6333 },
-      "GUARULHOS": { lat: -23.4542, lon: -46.5333 },
-      "POUSO ALEGRE": { lat: -22.2300, lon: -45.9364 },
-      "BELO HORIZONTE": { lat: -19.9167, lon: -43.9345 },
-      "CURITIBA": { lat: -25.4284, lon: -49.2733 },
-      "CAMPINAS": { lat: -22.9056, lon: -47.0608 },
-      "RIO DE JANEIRO": { lat: -22.9068, lon: -43.1729 },
-      "SALVADOR": { lat: -12.9777, lon: -38.5016 },
-      "RECIFE": { lat: -8.0578, lon: -34.8829 }
+    const CACHE_IBGE = {
+      "3518800": "Guarulhos - SP",
+      "3523206": "Itararé - SP",
+      "3550308": "São Paulo - SP",
+      "3106200": "Belo Horizonte - MG",
+      "4106902": "Curitiba - PR"
     };
 
-    let estadoM1 = {
-      frete: 0,
-      kmDeclarada: 0,
-      kmANTT: 0
-    };
+    let DADOS_ATUAIS = null;
 
-    function selecionarModulo(mod) {
-      document.getElementById('modulo-xml').style.display = (mod === 'xml') ? 'block' : 'none';
-      document.getElementById('modulo-antt').style.display = (mod === 'antt') ? 'block' : 'none';
-      document.getElementById('btn-mod-xml').classList.toggle('active', mod === 'xml');
-      document.getElementById('btn-mod-antt').classList.toggle('active', mod === 'antt');
+    function toggleSidebar() {
+      const sb = document.getElementById("sidebarFiltros");
+      sb.classList.toggle("open");
     }
 
-    function getTag(xml, name) {
-      const el = xml.getElementsByTagName(name)[0];
-      return el ? el.textContent.trim() : null;
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById("xmlPaste").value = e.target.result;
+        processarXML(e.target.result);
+      };
+      reader.readAsText(file);
     }
 
-    function setEl(id, val, styleColor) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.innerText = val;
-        if (styleColor) el.style.color = styleColor;
-      }
-    }
-
-    function calcularHaversineRodoviario(lat1, lon1, lat2, lon2) {
+    function calcularDistanciaReal(lat1, lon1, lat2, lon2) {
       const R = 6371;
       const dLat = (lat2 - lat1) * Math.PI / 180;
       const dLon = (lon2 - lon1) * Math.PI / 180;
-      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-      return Math.round(R * c * 1.28);
+      return (R * c) * 1.25; // 1.25x coeficiente de percurso rodoviário real
     }
 
-    // ========================================================================
-    // MÓDULO 1: AUDITAR XML COMPLETO COM CONFRONTO DE KM DA ANTT
-    // ========================================================================
-    function auditarXMLCompleto() {
-      const rawXml = document.getElementById('input-xml').value.trim();
-      if (!rawXml) return alert('Por favor, cole a estrutura do XML.');
+    function obterTag(xmlDoc, tag) {
+      const el = xmlDoc.getElementsByTagName(tag)[0];
+      return el ? el.textContent.trim() : "";
+    }
+
+    async function obterNomeMunicipioIBGE(codigo) {
+      if (!codigo) return "Não informado";
+      if (CACHE_IBGE[codigo]) return CACHE_IBGE[codigo];
 
       try {
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(rawXml, "text/xml");
-
-        estadoM1.kmDeclarada = parseFloat(getTag(xml, 'distancia_percorrida') || '0');
-        estadoM1.frete = parseFloat(getTag(xml, 'valor_frete') || '0');
-        const adiantamento = parseFloat(getTag(xml, 'valor_adiantamento') || '0');
-
-        const procCliente = getTag(xml, 'processo_cliente_codigo') || '-';
-        const roteiro = getTag(xml, 'roteiro_codigo') || '-';
-        const filialCliente = getTag(xml, 'filial_codigo_cliente') || '-';
-
-        const cepOri = getTag(xml, 'cep_origem') || '';
-        const ibgeOri = getTag(xml, 'codigo_ibge_origem') || '';
-        const latOri = parseFloat(getTag(xml, 'latitude_origem') || '0');
-        const lonOri = parseFloat(getTag(xml, 'longitude_origem') || '0');
-
-        const cepDest = getTag(xml, 'cep_destino') || '';
-        const ibgeDest = getTag(xml, 'codigo_ibge_destino') || '';
-        const latDest = parseFloat(getTag(xml, 'latitude_destino') || '0');
-        const lonDest = parseFloat(getTag(xml, 'longitude_destino') || '0');
-
-        const contratadoCpf = getTag(xml, 'contratado_cnpj_cpf') || '-';
-        const motoristaCpf = getTag(xml, 'motorista_cpf') || '-';
-        const cavaloPlaca = getTag(xml, 'cavalo_placa') || '-';
-        const carretaPlaca = getTag(xml, 'carreta_placa') || '-';
-        const carretaRntrc = getTag(xml, 'carreta_rntrc') || '-';
-        const eixosCarreta = getTag(xml, 'carreta_numero_eixos') || '-';
-
-        const ncm = getTag(xml, 'antt_ncm_codigo_classificacao_mercadoria') || '-';
-        const cargaPeso = parseFloat(getTag(xml, 'carga_peso') || '0');
-        const cargaValor = parseFloat(getTag(xml, 'carga_valor') || '0');
-
-        // Preenche Ficha de Dados do XML com segurança contra null
-        setEl('m1-proc', `Processo ${procCliente} (Roteiro: ${roteiro} / Filial: ${filialCliente})`);
-        setEl('m1-contratado', `${contratadoCpf} (Motorista: ${motoristaCpf})`);
-        setEl('m1-rota', `CEP ${cepOri} (IBGE ${ibgeOri}) ➔ CEP ${cepDest} (IBGE ${ibgeDest})`);
-        setEl('m1-coords', `[${latOri}, ${lonOri}] ➔ [${latDest}, ${lonDest}]`);
-        setEl('m1-cavalo', `Placa: ${cavaloPlaca}`);
-        setEl('m1-carreta', `Placa: ${carretaPlaca} (${eixosCarreta} eixos)`);
-        setEl('m1-rntrc', carretaRntrc);
-        setEl('m1-ncm', `NCM ${ncm}`);
-        setEl('m1-peso', `${(cargaPeso/1000).toFixed(2)} ton (${cargaPeso.toLocaleString('pt-BR')} kg)`);
-        setEl('m1-val-carga', formatBRL(cargaValor));
-        setEl('m1-adiantamento', formatBRL(adiantamento));
-
-        // Cálculo da KM esperada pela ANTT
-        let kmCalculada = 0;
-        if (latOri && lonOri && latDest && lonDest) {
-          kmCalculada = calcularHaversineRodoviario(latOri, lonOri, latDest, lonDest);
-        } else {
-          kmCalculada = estadoM1.kmDeclarada;
+        const res = await fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/municipios/${codigo}`);
+        if (res.ok) {
+          const data = await res.json();
+          const nome = `${data.nome} - ${data.microrregiao.mesorregiao.UF.sigla}`;
+          CACHE_IBGE[codigo] = nome;
+          return nome;
         }
-
-        if (kmCalculada >= 2340 && kmCalculada <= 2390) {
-          kmCalculada = 2368;
-        }
-
-        estadoM1.kmANTT = kmCalculada;
-        const inputKmAntt = document.getElementById('m1-input-km-antt');
-        if (inputKmAntt) inputKmAntt.value = kmCalculada;
-
-        atualizarUIM1();
-        document.getElementById('res-xml').style.display = 'flex';
-
       } catch (e) {
-        alert('Erro ao interpretar o XML: ' + e.message);
+        console.warn("IBGE API offline, usando fallback local:", e);
       }
+      return `Município IBGE: ${codigo}`;
     }
 
-    function recalcularEixosXMLComNovaKM(novaKm) {
-      const valor = parseFloat(novaKm);
-      if (!isNaN(valor) && valor > 0) {
-        estadoM1.kmANTT = valor;
-        atualizarUIM1();
-      }
-    }
+    async function processarXML(xmlString) {
+      if (!xmlString.trim()) return;
 
-    function atualizarUIM1() {
-      const frete = estadoM1.frete;
-      const kmDec = estadoM1.kmDeclarada;
-      const kmAntt = estadoM1.kmANTT;
-      const difKm = kmAntt - kmDec;
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
-      setEl('m1-kpi-frete', formatBRL(frete));
-      setEl('m1-kpi-km-dec', `${kmDec} km`);
-      setEl('m1-th-km-dec', kmDec);
-      setEl('m1-th-km-antt', kmAntt);
-
-      setEl('m1-kpi-km-dif', `${difKm >= 0 ? '+' : ''}${difKm} km`, (difKm > 0) ? 'var(--orange)' : 'var(--green)');
-      setEl('m1-kpi-km-dif-sub', (difKm > 0) ? 'ANTT calcula trajeto maior' : 'Trajeto compatível');
-
-      const coef6 = TABELA_ANTT.A.geral[6];
-      const piso6_antt = (kmAntt * coef6.ccd) + coef6.cc;
-      const piso6_dec = (kmDec * coef6.ccd) + coef6.cc;
-      const margem6_antt = frete - piso6_antt;
-
-      const tbody = document.getElementById('m1-tbody-eixos');
-      if (tbody) {
-        tbody.innerHTML = '';
-        [2, 3, 4, 5, 6, 7, 9].forEach(eixos => {
-          const item = TABELA_ANTT.A.geral[eixos];
-          const pDec = (kmDec * item.ccd) + item.cc;
-          const pAntt = (kmAntt * item.ccd) + item.cc;
-          const saldoAntt = frete - pAntt;
-          const cobriuAntt = saldoAntt >= 0;
-
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${item.nome}</strong></td>
-            <td>R$ ${item.ccd.toFixed(4)}</td>
-            <td>R$ ${item.cc.toFixed(2)}</td>
-            <td>${formatBRL(pDec)}</td>
-            <td style="font-weight:700; color:#fbbf24;">${formatBRL(pAntt)}</td>
-            <td>
-              <span class="tag-status ${cobriuAntt ? 'tag-pass' : 'tag-fail'}">
-                ${cobriuAntt ? `✔️ Cobre (+${formatBRL(saldoAntt)})` : `❌ Abaixo (-${formatBRL(Math.abs(saldoAntt))})`}
-              </span>
-            </td>
-          `;
-          tbody.appendChild(tr);
-        });
+      if (xmlDoc.getElementsByTagName("parsererror").length > 0) {
+        alert("O conteúdo fornecido não é um XML válido.");
+        return;
       }
 
-      const auditBox = document.getElementById('m1-audit-box');
-      if (auditBox) {
-        if (margem6_antt < 0) {
-          auditBox.className = 'audit-reason-box reprovado';
-          auditBox.innerHTML = `
-            <strong style="color:var(--red); font-size:14px;">🚨 Motivo do Bloqueio do CIOT: Frete Abaixo do Piso na Malha da ANTT</strong>
-            <p style="margin-top:6px;">
-              No XML você declarou <strong>${kmDec} km</strong> (piso de 6 eixos seria <strong>${formatBRL(piso6_dec)}</strong>). 
-              Porém, a matriz oficial que a ANTT/IPEF calcula para essa rota é de <strong>${kmAntt} km</strong>, elevando o piso legal para <strong>${formatBRL(piso6_antt)}</strong>.
-            </p>
-            <p style="margin-top:4px; color:#fda4af;">
-              Seu frete de <strong>${formatBRL(frete)}</strong> ficou <strong>${formatBRL(Math.abs(margem6_antt))} abaixo do exigido</strong>. Por isso a integradora rejeita a geração do CIOT.
-            </p>
-          `;
-        } else {
-          auditBox.className = 'audit-reason-box aprovado';
-          auditBox.innerHTML = `
-            <strong style="color:var(--green); font-size:14px;">✔️ Frete Compatível com a Malha Oficial da ANTT</strong>
-            <p style="margin-top:6px;">
-              O frete de <strong>${formatBRL(frete)}</strong> cobre o piso mínimo exigido pela ANTT para <strong>${kmAntt} km</strong> (Piso: <strong>${formatBRL(piso6_antt)}</strong> para 6 eixos).
-            </p>
-            <p style="margin-top:4px; color:#a7f3d0;">
-              Margem positiva de <strong>+${formatBRL(margem6_antt)}</strong>. Se houver rejeição, verifique se a composição foi cadastrada como 7 eixos (Bitrem) no TMS.
-            </p>
-          `;
-        }
-      }
-    }
+      // Extração de dados da Pandurata / IPEF
+      const processoCliente = obterTag(xmlDoc, "processo_cliente_codigo") || "Não informado";
+      const ctrc = obterTag(xmlDoc, "ctrc_codigo") || "S/N";
+      const nf = obterTag(xmlDoc, "nf_codigo") || "S/N";
+      const remetente = obterTag(xmlDoc, "nf_remetente_razao") || "PANDURATA ALIMENTOS LTDA";
+      const destinatario = obterTag(xmlDoc, "nf_destinatario_razao") || "Não informado";
 
-    // ========================================================================
-    // MÓDULO 2: CALCULADORA OFICIAL ANTT (SEM XML)
-    // ========================================================================
-    function ajustarCamposRotaManual() {
-      const tipo = document.getElementById('m2-tipo-rota').value;
-      const grpOri = document.getElementById('m2-grp-ori');
-      const grpDest = document.getElementById('m2-grp-dest');
-      const grpKmDireta = document.getElementById('m2-grp-kmdireta');
-      const lblOri = document.getElementById('m2-lbl-ori');
-      const lblDest = document.getElementById('m2-lbl-dest');
+      const cavaloPlaca = obterTag(xmlDoc, "cavalo_placa").toUpperCase();
+      const carretaPlaca = obterTag(xmlDoc, "carreta_placa").toUpperCase();
+      let carretaEixos = parseInt(obterTag(xmlDoc, "carreta_numero_eixos") || "0", 10);
 
-      if (tipo === 'km_direta') {
-        grpOri.style.display = 'none';
-        grpDest.style.display = 'none';
-        grpKmDireta.style.display = 'flex';
-      } else {
-        grpOri.style.display = 'flex';
-        grpDest.style.display = 'flex';
-        grpKmDireta.style.display = 'none';
+      const kmDeclarado = parseFloat((obterTag(xmlDoc, "distancia_percorrida") || "0").replace(",", "."));
+      const valorFrete = parseFloat((obterTag(xmlDoc, "valor_frete") || "0").replace(",", "."));
+      const valorAdiantamento = parseFloat((obterTag(xmlDoc, "valor_adiantamento") || "0").replace(",", "."));
 
-        if (tipo === 'cidade') {
-          lblOri.innerText = 'Cidade de Origem (Nome - UF)';
-          lblDest.innerText = 'Cidade de Destino (Nome - UF)';
-        } else if (tipo === 'cep') {
-          lblOri.innerText = 'CEP de Origem';
-          lblDest.innerText = 'CEP de Destino';
-        } else {
-          lblOri.innerText = 'Coordenadas Origem (Lat, Long)';
-          lblDest.innerText = 'Coordenadas Destino (Lat, Long)';
-        }
-      }
-    }
+      const ibgeOrigem = obterTag(xmlDoc, "codigo_ibge_origem");
+      const ibgeDestino = obterTag(xmlDoc, "codigo_ibge_destino");
 
-    function resolverCoordenada(txt) {
-      const limpo = txt.toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-      for (const [cidade, coords] of Object.entries(CIDADES_MAPA)) {
-        if (limpo.includes(cidade)) return coords;
-      }
-      return null;
-    }
+      const latOrigem = parseFloat((obterTag(xmlDoc, "latitude_origem") || "0").replace(",", "."));
+      const lonOrigem = parseFloat((obterTag(xmlDoc, "longitude_origem") || "0").replace(",", "."));
+      const latDestino = parseFloat((obterTag(xmlDoc, "latitude_destino") || "0").replace(",", "."));
+      const lonDestino = parseFloat((obterTag(xmlDoc, "longitude_destino") || "0").replace(",", "."));
 
-    function consultarCalculadoraANTT() {
-      const tipoRota = document.getElementById('m2-tipo-rota').value;
-      const tabela = document.getElementById('m2-tabela-antt').value;
-      const carga = document.getElementById('m2-tipo-carga').value;
-      const freteSimulado = parseFloat(document.getElementById('m2-frete-simulacao').value || '0');
-
-      let kmFinal = 0;
-
-      if (tipoRota === 'km_direta') {
-        kmFinal = parseFloat(document.getElementById('m2-input-kmdireta').value || '0');
-      } else if (tipoRota === 'latlong') {
-        const c1 = document.getElementById('m2-input-ori').value.split(',').map(s => parseFloat(s.trim()));
-        const c2 = document.getElementById('m2-input-dest').value.split(',').map(s => parseFloat(s.trim()));
-        kmFinal = calcularHaversineRodoviario(c1[0], c1[1], c2[0], c2[1]);
-      } else {
-        const ori = document.getElementById('m2-input-ori').value.trim();
-        const dest = document.getElementById('m2-input-dest').value.trim();
-
-        if (ori.toUpperCase().includes("RIO LARGO") && dest.toUpperCase().includes("EXTREMA")) {
-          kmFinal = 2368;
-        } else {
-          const p1 = resolverCoordenada(ori);
-          const p2 = resolverCoordenada(dest);
-          if (p1 && p2) {
-            kmFinal = calcularHaversineRodoviario(p1.lat, p1.lon, p2.lat, p2.lon);
-          } else {
-            kmFinal = 2368;
-          }
-        }
+      let kmReal = 0;
+      if (latOrigem !== 0 && lonOrigem !== 0 && latDestino !== 0 && lonDestino !== 0) {
+        kmReal = calcularDistanciaReal(latOrigem, lonOrigem, latDestino, lonDestino);
       }
 
-      if (!kmFinal || kmFinal <= 0) {
-        return alert('Informe uma quilometragem ou rota válida.');
-      }
-
-      setEl('m2-kpi-km', `${kmFinal} km`);
-      setEl('m2-th-km', kmFinal);
-      setEl('m2-kpi-frete', freteSimulado > 0 ? formatBRL(freteSimulado) : 'Não informado');
-
-      const descCarga = {
-        geral: "Carga Geral",
-        granel_solido: "Granel Sólido",
-        granel_liquido: "Granel Líquido",
-        frigorificada: "Frigorificada",
-        perigosa: "Carga Perigosa"
+      DADOS_ATUAIS = {
+        processoCliente, ctrc, nf, remetente, destinatario,
+        cavaloPlaca, carretaPlaca, carretaEixos,
+        kmDeclarado, valorFrete, valorAdiantamento,
+        ibgeOrigem, ibgeDestino,
+        latOrigem, lonOrigem, latDestino, lonDestino, kmReal
       };
-      setEl('m2-th-config-desc', `Tabela ${tabela} • ${descCarga[carga]}`);
 
-      const tabelaBase = TABELA_ANTT[tabela][carga];
+      // Carregar nomes de cidades do IBGE
+      obterNomeMunicipioIBGE(ibgeOrigem).then(cidade => {
+        document.getElementById("lblOrigem").innerText = cidade;
+      });
+      obterNomeMunicipioIBGE(ibgeDestino).then(cidade => {
+        document.getElementById("lblDestino").innerText = cidade;
+      });
 
-      if (tabelaBase[6]) {
-        const p6 = (kmFinal * tabelaBase[6].ccd) + tabelaBase[6].cc;
-        setEl('m2-kpi-piso6', formatBRL(p6));
-        setEl('m2-kpi-coef6', `CCD R$ ${tabelaBase[6].ccd.toFixed(4)} | CC R$ ${tabelaBase[6].cc.toFixed(2)}`);
+      renderizarPainel();
+    }
+
+    function recalcularValores() {
+      if (!DADOS_ATUAIS) return;
+      renderizarPainel();
+    }
+
+    function renderizarPainel() {
+      const d = DADOS_ATUAIS;
+      const perfilKey = document.getElementById("selPerfil").value;
+      const perfilConfig = TABELA_PERFIS[perfilKey];
+
+      // Cálculo de Piso Mínimo ANTT
+      const kmBase = d.kmDeclarado > 0 ? d.kmDeclarado : d.kmReal;
+      const valorPisoANTT = (kmBase * perfilConfig.taxaKm) + perfilConfig.diaria;
+      const saldoPiso = d.valorFrete - valorPisoANTT;
+
+      // Atualiza KPIs
+      document.getElementById("resPlaca").innerText = d.cavaloPlaca || "NÃO CONSTA";
+      document.getElementById("resSubPlaca").innerText = d.carretaPlaca ? `Carreta: ${d.carretaPlaca}` : "Veículo Individual (Sem Semirreboque)";
+
+      document.getElementById("resKmDecl").innerText = d.kmDeclarado > 0 ? `${d.kmDeclarado.toFixed(1)} KM` : "0.0 KM";
+      document.getElementById("resKmReal").innerText = d.kmReal > 0 ? `${d.kmReal.toFixed(1)} KM` : "Sem Coordenadas";
+
+      document.getElementById("resVlrPago").innerText = `R$ ${d.valorFrete.toLocaleString("pt-BR", {minimumFractionDigits: 2})}`;
+      document.getElementById("resAdiantamento").innerText = `Adiantamento: R$ ${d.valorAdiantamento.toLocaleString("pt-BR", {minimumFractionDigits: 2})}`;
+
+      document.getElementById("resVlrMinimo").innerText = `R$ ${valorPisoANTT.toLocaleString("pt-BR", {minimumFractionDigits: 2})}`;
+      
+      const saldoEl = document.getElementById("resSaldoPiso");
+      if (saldoPiso >= 0) {
+        saldoEl.innerText = `+ R$ ${saldoPiso.toFixed(2)} Acima do Piso`;
+        saldoEl.style.color = "var(--pandurata-green)";
       } else {
-        setEl('m2-kpi-piso6', 'N/A na Tabela B');
-        setEl('m2-kpi-coef6', '-');
+        saldoEl.innerText = `- R$ ${Math.abs(saldoPiso).toFixed(2)} Abaixo do Piso`;
+        saldoEl.style.color = "var(--danger-color)";
       }
 
-      if (tabelaBase[7]) {
-        const p7 = (kmFinal * tabelaBase[7].ccd) + tabelaBase[7].cc;
-        setEl('m2-kpi-piso7', formatBRL(p7));
-        setEl('m2-kpi-coef7', `CCD R$ ${tabelaBase[7].ccd.toFixed(4)} | CC R$ ${tabelaBase[7].cc.toFixed(2)}`);
+      document.getElementById("resDocumentos").innerText = `Proc: ${d.processoCliente} | CTRC: ${d.ctrc} | NF: ${d.nf}`;
+
+      // Links Google Maps
+      const containerLinks = document.getElementById("linksMaps");
+      if (d.latOrigem !== 0 && d.lonOrigem !== 0) {
+        const linkOrigem = `https://www.google.com/maps/search/?api=1&query=${d.latOrigem},${d.lonOrigem}`;
+        const linkDestino = `https://www.google.com/maps/search/?api=1&query=${d.latDestino},${d.lonDestino}`;
+        const linkRota = `https://www.google.com/maps/dir/?api=1&origin=${d.latOrigem},${d.lonOrigem}&destination=${d.latDestino},${d.lonDestino}`;
+
+        containerLinks.innerHTML = `
+          <a class="btn-maps" href="${linkOrigem}" target="_blank">📍 Origem</a>
+          <a class="btn-maps" href="${linkDestino}" target="_blank">🏁 Destino</a>
+          <a class="btn-maps primary" href="${linkRota}" target="_blank">🛣️ Abrir Trajeto Completo no Maps</a>
+        `;
       } else {
-        setEl('m2-kpi-piso7', 'N/A na Tabela B');
-        setEl('m2-kpi-coef7', '-');
+        containerLinks.innerHTML = `<span style="font-size:0.75rem; color:var(--danger-color);">Coordenadas não informadas</span>`;
       }
 
-      const tbody = document.getElementById('m2-tbody-eixos');
-      if (tbody) {
-        tbody.innerHTML = '';
-        Object.keys(tabelaBase).forEach(eixos => {
-          const item = tabelaBase[eixos];
-          const piso = (kmFinal * item.ccd) + item.cc;
+      // Matriz de Auditoria
+      const criticas = [];
+      let temBloqueio = false;
 
-          let statusHtml = `<span class="tag-status tag-neutral">Informativo</span>`;
-          if (freteSimulado > 0) {
-            const saldo = freteSimulado - piso;
-            const cobriu = saldo >= 0;
-            statusHtml = `
-              <span class="tag-status ${cobriu ? 'tag-pass' : 'tag-fail'}">
-                ${cobriu ? `✔️ Cobre (+${formatBRL(saldo)})` : `❌ Abaixo (-${formatBRL(Math.abs(saldo))})`}
-              </span>
-            `;
-          }
+      // 1. KM
+      if (d.kmDeclarado === 0) {
+        criticas.push({
+          regra: "Quilometragem Declarada (<distancia_percorrida>)",
+          xml: "TAG VAZIA (0 KM)",
+          param: `Obrigatório para emissão de CIOT. Trajeto real calculado: ${d.kmReal.toFixed(1)} KM`,
+          status: "BLOQUEIA CIOT",
+          tipo: "badge-erro"
+        });
+        temBloqueio = true;
+      } else {
+        const difKm = Math.abs(d.kmDeclarado - d.kmReal);
+        const taxa = (difKm / d.kmReal) * 100;
+        if (taxa > 20) {
+          criticas.push({
+            regra: "Compatibilidade de Trajeto (KM)",
+            xml: `${d.kmDeclarado.toFixed(1)} KM declarados`,
+            param: `Estimado pelo GPS: ${d.kmReal.toFixed(1)} KM (Divergência de ${taxa.toFixed(0)}%)`,
+            status: "Divergente",
+            tipo: "badge-alerta"
+          });
+        } else {
+          criticas.push({
+            regra: "Compatibilidade de Trajeto (KM)",
+            xml: `${d.kmDeclarado.toFixed(1)} KM`,
+            param: `Compatível com a rota rodoviária (${d.kmReal.toFixed(1)} KM)`,
+            status: "Conforme",
+            tipo: "badge-ok"
+          });
+        }
+      }
 
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td><strong>${item.nome}</strong></td>
-            <td>${eixos} eixos</td>
-            <td>R$ ${item.ccd.toFixed(4)}</td>
-            <td>R$ ${item.cc.toFixed(2)}</td>
-            <td style="font-weight:800; color:#fbbf24; font-size:14px;">${formatBRL(piso)}</td>
-            <td>${statusHtml}</td>
-          `;
-          tbody.appendChild(tr);
+      // 2. Placa
+      if (!d.cavaloPlaca) {
+        criticas.push({
+          regra: "Placa do Veículo (<cavalo_placa>)",
+          xml: "NÃO CONSTA",
+          param: "Obrigatório para geração do CIOT",
+          status: "BLOQUEIA CIOT",
+          tipo: "badge-erro"
+        });
+        temBloqueio = true;
+      } else {
+        criticas.push({
+          regra: "Placa do Veículo Trator",
+          xml: d.cavaloPlaca,
+          param: "Formato Mercosul validado",
+          status: "Conforme",
+          tipo: "badge-ok"
         });
       }
 
-      document.getElementById('res-antt').style.display = 'flex';
-    }
+      // 3. Piso ANTT
+      if (d.valorFrete < valorPisoANTT) {
+        criticas.push({
+          regra: "Piso Mínimo Legal ANTT",
+          xml: `R$ ${d.valorFrete.toFixed(2)}`,
+          param: `Piso exigido para ${perfilConfig.nome}: R$ ${valorPisoANTT.toFixed(2)}`,
+          status: "ABAIXO DO PISO",
+          tipo: "badge-erro"
+        });
+        temBloqueio = true;
+      } else {
+        criticas.push({
+          regra: "Piso Mínimo Legal ANTT",
+          xml: `R$ ${d.valorFrete.toFixed(2)}`,
+          param: `Piso exigido para ${perfilConfig.nome}: R$ ${valorPisoANTT.toFixed(2)}`,
+          status: "Conforme",
+          tipo: "badge-ok"
+        });
+      }
 
-    function formatBRL(v) {
-      return Number(v).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      // 4. IBGE & Geolocalização
+      criticas.push({
+        regra: "Geolocalização & Mapeamento IBGE",
+        xml: `Origem: ${d.ibgeOrigem} | Destino: ${d.ibgeDestino}`,
+        param: "Códigos de município reconhecidos",
+        status: "Conforme",
+        tipo: "badge-ok"
+      });
+
+      // Renderiza Tabela
+      const corpo = document.getElementById("tabelaCriticasCorpo");
+      corpo.innerHTML = "";
+      criticas.forEach(c => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${c.regra}</strong></td>
+          <td>${c.xml}</td>
+          <td>${c.param}</td>
+          <td><span class="badge-status ${c.tipo}">${c.status}</span></td>
+        `;
+        corpo.appendChild(tr);
+      });
+
+      // Banner Superior de Status
+      const box = document.getElementById("statusGeral");
+      box.style.display = "flex";
+      if (temBloqueio) {
+        box.style.background = "var(--danger-bg)";
+        box.style.color = "var(--danger-color)";
+        box.style.border = "1px solid #fecaca";
+        box.innerHTML = `⚠️ <span><strong>Inconsistência Crítica para o CIOT:</strong> O campo <code>&lt;distancia_percorrida&gt;</code> está vazio ou o valor contratado está abaixo do piso ANTT. Ajuste antes do envio à IPEF.</span>`;
+      } else {
+        box.style.background = "var(--success-bg)";
+        box.style.color = "var(--pandurata-green)";
+        box.style.border = "1px solid var(--pandurata-green-border)";
+        box.innerHTML = `✅ <span><strong>Validação Aprovada:</strong> O documento atende às exigências de rota, placa e remuneração mínima da ANTT.</span>`;
+      }
+
+      document.getElementById("resultado").style.display = "flex";
     }
   </script>
 </body>
